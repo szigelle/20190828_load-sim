@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	"strconv"
 	"time"
@@ -76,14 +77,17 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 				ISOWK:    isowk,
 				WEEKDAY:  weekday,
 				HOUR:     datetime.Hour(),
-				LOAD:     load,
-				HIGH:     high,
-				LOW:      low,
-				TDELTA:   high - low,
-				ID:       isowk*10000 + weekday*100 + datetime.Hour(), //[ISOweek][Weekday][Hour]
-				HOLIDAY:  "",
-				BEFORE:   false,
-				AFTER:    false,
+				HOURSIN:  math.Sin(2 * math.Pi * float64(datetime.Hour()) / 23),
+				HOURCOS:  math.Cos(2 * math.Pi * float64(datetime.Hour()) / 23),
+				//https://www.kaggle.com/avanwyk/encoding-cyclical-features-for-deep-learning
+				LOAD:    load,
+				HIGH:    high,
+				LOW:     low,
+				TDELTA:  high - low,
+				ID:      isowk*10000 + weekday*100 + datetime.Hour(), //[ISOweek][Weekday][Hour]
+				HOLIDAY: "",
+				BEFORE:  false,
+				AFTER:   false,
 			}
 		}
 	}

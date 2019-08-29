@@ -12,6 +12,8 @@ type DATA struct {
 	ISOWK    int
 	WEEKDAY  int
 	HOUR     int
+	HOURSIN  float64
+	HOURCOS  float64
 	LOAD     float64
 	HIGH     float64
 	LOW      float64

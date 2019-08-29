@@ -140,9 +140,6 @@ func tLR(ts map[int][]*db.DATA) map[int]*regression.Regression {
 		var x1, y []float64
 
 		for j := range ts[i] {
-			if ts[i][j].MONTH > 4 || ts[i][j].MONTH < 10 {
-				x1 = append(x1, ts[i][j].HIGH)
-			}
 			x1 = append(x1, ts[i][j].LOW)
 
 			y = append(y, ts[i][j].LOAD)
@@ -172,8 +169,8 @@ func hLR(hs map[string][]*db.DATA) map[string]*regression.Regression {
 		var x1, y []float64
 
 		for j := range hs[i] {
-
 			x1 = append(x1, hs[i][j].HIGH)
+
 			y = append(y, hs[i][j].LOAD)
 		}
 
@@ -210,12 +207,8 @@ func tPred(t map[time.Time]*db.DATA, tr map[int]*regression.Regression) (map[int
 	for i := range t {
 		ID := t[i].ID
 
-		if t[i].MONTH > 4 || t[i].MONTH < 10 {
-
-			x1 = t[i].HIGH
-
-		}
 		x1 = t[i].LOW
+
 		y0 = t[i].LOAD
 
 		prediction, err := tr[ID].Predict([]float64{x1})
@@ -237,7 +230,7 @@ func hPred(h map[time.Time]*db.DATA, hr map[string]*regression.Regression) (map[
 	for i := range h { // for all the test points
 		ID := h[i].HOLIDAY
 
-		s[ID] = []float64{h[i].HIGH}
+		s[ID] = []float64{h[i].LOW}
 
 		prediction, err := hr[ID].Predict([]float64{s[ID][0]})
 
