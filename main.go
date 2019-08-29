@@ -24,17 +24,17 @@ func main() {
 
 	t, h := prep.PullHoliday(train)
 
-	ping := time.Now()
+	//ping := time.Now()
+
 	ts, hs := prep.MakeSamples(t, h)
 
 	file, _ := os.Create(("output/test.csv"))
-
+	defer file.Close()
 	w := csv.NewWriter(file)
-
-	w.Write([]string{"ID"})
+	defer w.Flush()
 
 	for i := range ts {
-		x := []string{}
+		x := []string{fmt.Sprintf("%d", i)}
 		for j := range ts[i] {
 
 			x = append(x, fmt.Sprintf("%s", ts[i][j].DATETIME.Format("2006-01-02 15:04")))
@@ -42,10 +42,23 @@ func main() {
 		}
 		w.Write(x)
 	}
-	defer w.Flush()
-	file.Close()
 
-	pong := time.Now()
+	file, _ = os.Create(("output/htest.csv"))
+	defer file.Close()
+	w = csv.NewWriter(file)
+	defer w.Flush()
+
+	for i := range hs {
+		x := []string{fmt.Sprintf("%s", i)}
+		for j := range hs[i] {
+
+			x = append(x, fmt.Sprintf("%s", hs[i][j].DATETIME.Format("2006-01-02 15:04")))
+
+		}
+		w.Write(x)
+	}
+
+	//pong := time.Now()
 
 	tr, hr := model.BuildLR(ts, hs)
 
@@ -57,9 +70,9 @@ func main() {
 	runtime := end.Sub(start)
 	fmt.Println("\nRUNTIME: ", runtime)
 
-	pingpong := pong.Sub(ping)
+	//pingpong := pong.Sub(ping)
 
-	fmt.Println("\nmakingsamples: ", pingpong)
+	//fmt.Println("\nmakingsamples: ", pingpong)
 	fmt.Println("before (｡♥‿♥｡) ")
 
 	fmt.Println("after ／(・x・)＼ ")

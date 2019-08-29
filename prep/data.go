@@ -51,12 +51,12 @@ func tsamples(m map[time.Time]*db.DATA) map[int][]*db.DATA {
 			if m[i].ID == j { // ID matches the map id
 				s[j] = append(s[j], m[i])
 				if date, ok := m[i.AddDate(0, 0, -7)]; ok {
-					if date.BEFORE == false {
+					if date.BEFORE == false { // if date is week before holiday
 						s[j] = append(s[j], date)
 					}
 				}
 				if date, ok := m[i.AddDate(0, 0, 7)]; ok {
-					if date.AFTER == false {
+					if date.AFTER == false { // if date is week after holiday
 						s[j] = append(s[j], date)
 					}
 				}
