@@ -77,12 +77,19 @@ func thanks(d *db.DATA) bool {
 	return compareDates(d, weekofM, dayofW)
 }
 
+func native(d *db.DATA) bool {
+	weekofM := 4
+	dayofW := 5 //F
+	return compareDates(d, weekofM, dayofW)
+}
+
 //PullHoliday is a holiday helper
 func PullHoliday(m map[time.Time]*db.DATA) (map[time.Time]*db.DATA, map[time.Time]*db.DATA) {
 	fmt.Println("...pulling holidays")
 	h := make(map[time.Time]*db.DATA)
 
 	for i := range m {
+		fmt.Println(m[i])
 		switch m[i].LOCAL.Month() {
 		case 1:
 			switch m[i].LOCAL.Day() {
@@ -139,11 +146,18 @@ func PullHoliday(m map[time.Time]*db.DATA) (map[time.Time]*db.DATA, map[time.Tim
 				//	m, h = isHoliday(m, h, i, "std")
 				//	continue
 				//	}
-
-				if thanks(m[i]) == true {
+				switch thanks(m[i]) {
+				case true:
 					m, h = isHoliday(m, h, i, "thanks")
 					continue
+				default:
+					if native(m[i]) == true { // day after thanksgiving
+						fmt.Println("NATIVE")
+						m, h = isHoliday(m, h, i, "native")
+						continue
+					}
 				}
+
 				//add day after thanksgiving?
 			}
 		case 12:

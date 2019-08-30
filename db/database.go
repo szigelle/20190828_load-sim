@@ -12,14 +12,14 @@ type DATA struct {
 	ISOWK    int
 	WEEKDAY  int
 	HOUR     int
-	HOURSIN  float64
-	HOURCOS  float64
-	LOAD     float64
-	HIGH     float64
-	LOW      float64
-	TDELTA   float64
-	ID       int    //[ISOweek][Weekday][Hour]
-	HOLIDAY  string // true if holiday
-	BEFORE   bool
-	AFTER    bool
+	//HOURSIN  float64
+	//	HOURCOS  float64
+	LOAD    float64
+	HIGH    float64
+	LOW     float64
+	TDELTA  float64
+	ID      int    //[ISOweek][Weekday][Hour]
+	HOLIDAY string // true if holiday
+	BEFORE  bool
+	AFTER   bool
 }

@@ -12,6 +12,7 @@ func TrainTestSplit(m map[time.Time]*db.DATA, year int) (map[time.Time]*db.DATA,
 	train := make(map[time.Time]*db.DATA)
 	test := make(map[time.Time]*db.DATA)
 
+	fmt.Printf("Test Year: %d")
 	for i := range m {
 		if m[i].ISOYR == year {
 			test[i] = m[i]
@@ -70,7 +71,7 @@ func hsamples(h map[time.Time]*db.DATA) map[string][]*db.DATA {
 	//make ID idx
 	s := make(map[string][]*db.DATA)
 
-	hID := []string{"ny", "mlk", "dst", "mem", "indep", "labor", "thanks", "xmas"}
+	hID := []string{"ny", "mlk", "dst", "mem", "indep", "labor", "thanks", "native", "xmas"}
 	for i := range hID {
 		for j := 0; j <= 23; j++ {
 			x := make([]*db.DATA, 0)

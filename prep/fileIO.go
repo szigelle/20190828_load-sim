@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math"
 	"os"
 	"strconv"
 	"time"
@@ -84,8 +83,8 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 				ISOWK:    isowk,
 				WEEKDAY:  weekday,
 				HOUR:     datetime.Hour(),
-				HOURSIN:  math.Sin(2 * math.Pi * float64(datetime.Hour()) / 23),
-				HOURCOS:  math.Cos(2 * math.Pi * float64(datetime.Hour()) / 23),
+				//	HOURSIN:  math.Sin(2 * math.Pi * float64(datetime.Hour()) / 23),
+				//	HOURCOS:  math.Cos(2 * math.Pi * float64(datetime.Hour()) / 23),
 				//https://www.kaggle.com/avanwyk/encoding-cyclical-features-for-deep-learning
 				LOAD:    load,
 				HIGH:    high,
