@@ -28,9 +28,13 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 	if _, err := r.Read(); err != nil { //read header
 		log.Fatal(err)
 	}
+
+	//	var x int = 0
+
 	for { // pull data from each line
 		line, err := r.Read()
-
+		//		fmt.Println(x)
+		//		x = x + 1
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -40,17 +44,20 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 		date := fmt.Sprintf("%s", line[1])
 		high, err := strconv.ParseFloat(line[2], 64)
 		if err != nil {
+			fmt.Println(line[2])
 			fmt.Println(err)
 		}
 
 		low, err := strconv.ParseFloat(line[3], 64)
 		if err != nil {
+			fmt.Println(line[3])
 			fmt.Println(err)
 		}
 
 		for i := range line[4:] { // make a struct for each hour
 			load, err := strconv.ParseFloat(line[(i+4)], 64)
 			if err != nil {
+				fmt.Println(line[i+4])
 				fmt.Println(err)
 			}
 

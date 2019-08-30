@@ -137,20 +137,23 @@ func tLR(ts map[int][]*db.DATA) map[int]*regression.Regression {
 	tr := make(map[int]*regression.Regression)
 
 	for i := range ts {
-		var x1, y []float64
+		var x1, x2, y []float64
 
 		for j := range ts[i] {
-			x1 = append(x1, ts[i][j].LOW)
-
+			x1 = append(x1, ts[i][j].HIGH)
+			x2 = append(x2, ts[i][j].LOW)
+			//x3 = append(x1, ts[i][j].TDELTA)
 			y = append(y, ts[i][j].LOAD)
 		}
 
 		r := new(regression.Regression)
 		r.SetObserved("load vs temp")
-		r.SetVar(0, "temp")
+		r.SetVar(0, "h")
+		r.SetVar(1, "l")
+
 		for j := range y {
 			r.Train(
-				regression.DataPoint(y[j], []float64{x1[j]}),
+				regression.DataPoint(y[j], []float64{x1[j], x2[j]}),
 			)
 		}
 		r.Run()
@@ -166,20 +169,23 @@ func hLR(hs map[string][]*db.DATA) map[string]*regression.Regression {
 	hr := make(map[string]*regression.Regression)
 
 	for i := range hs {
-		var x1, y []float64
+		var x1, x2, y []float64
 
 		for j := range hs[i] {
 			x1 = append(x1, hs[i][j].HIGH)
-
+			x2 = append(x2, hs[i][j].LOW)
+			//x3 = append(x1, hs[i][j].TDELTA)
 			y = append(y, hs[i][j].LOAD)
 		}
 
 		r := new(regression.Regression)
 		r.SetObserved("load vs temp")
-		r.SetVar(0, "temp")
+		r.SetVar(0, "h")
+		r.SetVar(1, "l")
+
 		for j := range y {
 			r.Train(
-				regression.DataPoint(y[j], []float64{x1[j]}),
+				regression.DataPoint(y[j], []float64{x1[j], x2[j]}),
 			)
 		}
 		r.Run()
@@ -202,22 +208,24 @@ func tPred(t map[time.Time]*db.DATA, tr map[int]*regression.Regression) (map[int
 	s := make(map[int][]float64, 0)
 	yhat := make(map[int]float64, 0)
 
-	var x1, y0 float64
+	var x1, x2, y0 float64
 
 	for i := range t {
 		ID := t[i].ID
 
-		x1 = t[i].LOW
+		x1 = t[i].HIGH
+		x2 = t[i].LOW
+		//x3 = t[i].TDELTA
 
 		y0 = t[i].LOAD
 
-		prediction, err := tr[ID].Predict([]float64{x1})
+		prediction, err := tr[ID].Predict([]float64{x1, x2})
 		if err != nil {
 			println(err)
 
 		}
 		yhat[ID] = prediction
-		s[ID] = []float64{x1, y0}
+		s[ID] = []float64{x1, x2, y0}
 	}
 
 	return s, yhat
@@ -230,9 +238,9 @@ func hPred(h map[time.Time]*db.DATA, hr map[string]*regression.Regression) (map[
 	for i := range h { // for all the test points
 		ID := h[i].HOLIDAY
 
-		s[ID] = []float64{h[i].LOW}
+		s[ID] = []float64{h[i].HIGH, h[i].LOW}
 
-		prediction, err := hr[ID].Predict([]float64{s[ID][0]})
+		prediction, err := hr[ID].Predict([]float64{s[ID][0], s[ID][1]})
 
 		if err != nil {
 			println(err)
