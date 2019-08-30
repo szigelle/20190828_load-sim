@@ -142,7 +142,7 @@ func tLR(ts map[int][]*db.DATA) map[int]*regression.Regression {
 		for j := range ts[i] {
 			x1 = append(x1, ts[i][j].HIGH)
 			x2 = append(x2, ts[i][j].LOW)
-			//x3 = append(x1, ts[i][j].TDELTA)
+
 			y = append(y, ts[i][j].LOAD)
 		}
 
@@ -174,7 +174,7 @@ func hLR(hs map[string][]*db.DATA) map[string]*regression.Regression {
 		for j := range hs[i] {
 			x1 = append(x1, hs[i][j].HIGH)
 			x2 = append(x2, hs[i][j].LOW)
-			//x3 = append(x1, hs[i][j].TDELTA)
+
 			y = append(y, hs[i][j].LOAD)
 		}
 
@@ -182,6 +182,7 @@ func hLR(hs map[string][]*db.DATA) map[string]*regression.Regression {
 		r.SetObserved("load vs temp")
 		r.SetVar(0, "h")
 		r.SetVar(1, "l")
+		r.SetVar(2, "delta")
 
 		for j := range y {
 			r.Train(
@@ -215,7 +216,6 @@ func tPred(t map[time.Time]*db.DATA, tr map[int]*regression.Regression) (map[int
 
 		x1 = t[i].HIGH
 		x2 = t[i].LOW
-		//x3 = t[i].TDELTA
 
 		y0 = t[i].LOAD
 
@@ -240,7 +240,8 @@ func hPred(h map[time.Time]*db.DATA, hr map[string]*regression.Regression) (map[
 
 		s[ID] = []float64{h[i].HIGH, h[i].LOW}
 
-		prediction, err := hr[ID].Predict([]float64{s[ID][0], s[ID][1]})
+		prediction, err := hr[ID].Predict(s[ID])
+		//		prediction, err := hr[ID].Predict([]float64{s[ID][0], s[ID][1], s[ID][2]})
 
 		if err != nil {
 			println(err)

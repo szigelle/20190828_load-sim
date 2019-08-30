@@ -16,7 +16,7 @@ import (
 func main() {
 	start := time.Now()
 
-	year := 2018
+	year := 2014
 
 	filename := "tacomaWA2013_2018"
 	data := prep.ReadCSV(filename)

@@ -12,8 +12,8 @@ func TrainTestSplit(m map[time.Time]*db.DATA, year int) (map[time.Time]*db.DATA,
 	train := make(map[time.Time]*db.DATA)
 	test := make(map[time.Time]*db.DATA)
 
-	fmt.Printf("Test Year: %d")
 	for i := range m {
+
 		if m[i].ISOYR == year {
 			test[i] = m[i]
 		} else {
