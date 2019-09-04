@@ -6,6 +6,18 @@ import (
 	"time"
 )
 
+// GetData gets more data
+func GetData(m map[time.Time]*db.DATA) {
+	for i := range m {
+		if t, ok := m[i.Add(-time.Hour)]; ok {
+			m[i].PREVLOAD = t.LOAD
+		}
+		if t, ok := m[i.Add(time.Hour)]; ok {
+			m[i].NEXTLOAD = t.LOAD
+		}
+	}
+}
+
 //TrainTestSplit splits the data
 func TrainTestSplit(m map[time.Time]*db.DATA, year int) (map[time.Time]*db.DATA, map[time.Time]*db.DATA) {
 	fmt.Println("...splitting data")

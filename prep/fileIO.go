@@ -30,8 +30,7 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 
 	for { // pull data from each line
 		line, err := r.Read()
-		//		fmt.Println(x)
-		//		x = x + 1
+
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -85,6 +84,8 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 				HIGH:     high,
 				LOW:      low,
 				TDELTA:   high - low,
+				PREVLOAD: 0,
+				NEXTLOAD: 0,
 				ID:       isowk*10000 + weekday*100 + datetime.Hour(), //[ISOweek][Weekday][Hour]
 				HOLIDAY:  "",
 				BEFORE:   false,

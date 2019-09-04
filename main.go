@@ -16,25 +16,28 @@ import (
 func main() {
 	start := time.Now()
 
-	year := 2018
+	year := 2017
 
 	filename := "tacomaWA2013_2018"
 	data := prep.ReadCSV(filename)
+
+	prep.GetData(data)
+
 	train, test := prep.TrainTestSplit(data, year)
 
-	n, h := prep.PullHoliday(train)
-	ns, hs := prep.MakeSamples(n, h)
+	t, h := prep.PullHoliday(train)
+	ts, hs := prep.MakeSamples(t, h)
 
 	////////////////////////////////////////////////////////////////////
 	file, _ := os.Create(("output/test.csv"))
 	defer file.Close()
 	w := csv.NewWriter(file)
 	defer w.Flush()
-	for i := range ns {
+	for i := range ts {
 		x := []string{fmt.Sprintf("%d", i)}
-		for j := range ns[i] {
+		for j := range ts[i] {
 
-			x = append(x, fmt.Sprintf("%s", ns[i][j].DATETIME.Format("2006-01-02 15:04")))
+			x = append(x, fmt.Sprintf("%s", ts[i][j].DATETIME.Format("2006-01-02 15:04")))
 
 		}
 		w.Write(x)
@@ -56,12 +59,11 @@ func main() {
 	}
 	////////////////////////////////////////////////////////////////////
 
-	nr, hr := model.BuildLR(ns, hs)
+	tr, hr := model.BuildLR(ts, hs)
 
-	///////////////////////////////////////
-	n, h = prep.PullHoliday(test)
+	t, h = prep.PullHoliday(test)
 
-	nv, np, hv, hp := model.PredictLR(n, nr, h, hr)
+	tv, tp, hv, hp := model.PredictLR(t, tr, h, hr)
 	end := time.Now()
 
 	runtime := end.Sub(start)
@@ -70,7 +72,7 @@ func main() {
 	fmt.Println("before (｡♥‿♥｡) ")
 	fmt.Println("after ／(・x・)＼ ")
 
-	writeResults(n, nv, np, h, hv, hp)
+	writeResults(t, tv, tp, h, hv, hp)
 }
 
 func writeResults(t map[time.Time]*db.DATA, tv map[int][]float64, tp map[int]float64, h map[time.Time]*db.DATA, hv map[string][]float64, hp map[string]float64) {

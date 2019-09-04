@@ -8,19 +8,18 @@ import (
 	"github.com/sajari/regression"
 )
 
-//////////////////////////////////////////
-
 func tLR(ts map[int][]*db.DATA) map[int]*regression.Regression {
 	fmt.Println("...training tLR")
 	tr := make(map[int]*regression.Regression)
 
 	for i := range ts {
-		var x1, x2, y []float64
+		var x1, x2, x3, x4, y []float64
 
 		for j := range ts[i] {
 			x1 = append(x1, ts[i][j].HIGH)
 			x2 = append(x2, ts[i][j].LOW)
-
+			x3 = append(x3, ts[i][j].PREVLOAD)
+			x4 = append(x4, ts[i][j].NEXTLOAD)
 			y = append(y, ts[i][j].LOAD)
 		}
 
@@ -28,10 +27,12 @@ func tLR(ts map[int][]*db.DATA) map[int]*regression.Regression {
 		r.SetObserved("load vs temp")
 		r.SetVar(0, "h")
 		r.SetVar(1, "l")
+		r.SetVar(2, "p")
+		r.SetVar(3, "n")
 
 		for j := range y {
 			r.Train(
-				regression.DataPoint(y[j], []float64{x1[j], x2[j]}),
+				regression.DataPoint(y[j], []float64{x1[j], x2[j], x3[j], x4[j]}),
 			)
 		}
 		r.Run()
@@ -60,7 +61,6 @@ func hLR(hs map[string][]*db.DATA) map[string]*regression.Regression {
 		r.SetObserved("load vs temp")
 		r.SetVar(0, "h")
 		r.SetVar(1, "l")
-		r.SetVar(2, "delta")
 
 		for j := range y {
 			r.Train(
@@ -87,23 +87,25 @@ func tPred(t map[time.Time]*db.DATA, tr map[int]*regression.Regression) (map[int
 	s := make(map[int][]float64, 0)
 	yhat := make(map[int]float64, 0)
 
-	var x1, x2, y0 float64
+	var x1, x2, x3, x4, y0 float64
 
 	for i := range t {
 		ID := t[i].ID
 
 		x1 = t[i].HIGH
 		x2 = t[i].LOW
+		x3 = t[i].PREVLOAD
+		x4 = t[i].NEXTLOAD
 
 		y0 = t[i].LOAD
 
-		prediction, err := tr[ID].Predict([]float64{x1, x2})
+		prediction, err := tr[ID].Predict([]float64{x1, x2, x3, x4})
 		if err != nil {
 			println(err)
 
 		}
 		yhat[ID] = prediction
-		s[ID] = []float64{x1, x2, y0}
+		s[ID] = []float64{x1, x2, x3, x4, y0}
 	}
 
 	return s, yhat
@@ -119,7 +121,6 @@ func hPred(h map[time.Time]*db.DATA, hr map[string]*regression.Regression) (map[
 		s[ID] = []float64{h[i].HIGH, h[i].LOW}
 
 		prediction, err := hr[ID].Predict(s[ID])
-		//		prediction, err := hr[ID].Predict([]float64{s[ID][0], s[ID][1], s[ID][2]})
 
 		if err != nil {
 			println(err)
