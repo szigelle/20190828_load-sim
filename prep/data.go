@@ -71,7 +71,7 @@ func hsamples(h map[time.Time]*db.DATA) map[string][]*db.DATA {
 	//make ID idx
 	s := make(map[string][]*db.DATA)
 
-	hID := []string{"ny", "mlk", "dst", "mem", "indep", "labor", "thanks", "native", "xmas"}
+	hID := []string{"ny", "mlk", "dst", "mem", "indep", "labor", "thanks", "native", "eve", "xmas"}
 	for i := range hID {
 		for j := 0; j <= 23; j++ {
 			x := make([]*db.DATA, 0)

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-// ReadCSV
+// ReadCSV is
 func ReadCSV(filename string) map[time.Time]*db.DATA {
 	fmt.Println("...opening load csv file")
 	f, err := os.Open(fmt.Sprintf("data/%s.csv", filename))
@@ -68,7 +68,7 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 			isoyr, isowk := datetime.ISOWeek()
 			weekday := (int(datetime.Weekday()+6) % 7)
 
-			if high == 0 || low == 0 || load == 0 {
+			if high == 0 || low == 0 || load == 0 { // change for places that reach below 0 temperatures
 				continue
 			}
 

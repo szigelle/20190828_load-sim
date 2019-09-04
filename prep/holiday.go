@@ -32,7 +32,6 @@ func compareDates(d *db.DATA, wom int, dow int) bool {
 	if f.Day() == d.LOCAL.Day() {
 		return true
 	}
-
 	return false
 }
 
@@ -73,13 +72,13 @@ func fb(d *db.DATA) bool {
 
 func thanks(d *db.DATA) bool {
 	weekofM := 4
-	dayofW := 4 //R
+	dayofW := 4
 	return compareDates(d, weekofM, dayofW)
 }
 
 func native(d *db.DATA) bool {
 	weekofM := 4
-	dayofW := 5 //F
+	dayofW := 5
 	return compareDates(d, weekofM, dayofW)
 }
 
@@ -89,7 +88,6 @@ func PullHoliday(m map[time.Time]*db.DATA) (map[time.Time]*db.DATA, map[time.Tim
 	h := make(map[time.Time]*db.DATA)
 
 	for i := range m {
-		fmt.Println(m[i])
 		switch m[i].LOCAL.Month() {
 		case 1:
 			switch m[i].LOCAL.Day() {
@@ -142,26 +140,23 @@ func PullHoliday(m map[time.Time]*db.DATA) (map[time.Time]*db.DATA, map[time.Tim
 		case 11:
 			switch m[i].LOCAL.Day() {
 			default:
-				//if fb(m[i]) == true {
-				//	m, h = isHoliday(m, h, i, "std")
-				//	continue
-				//	}
 				switch thanks(m[i]) {
 				case true:
 					m, h = isHoliday(m, h, i, "thanks")
 					continue
 				default:
 					if native(m[i]) == true { // day after thanksgiving
-						fmt.Println("NATIVE")
 						m, h = isHoliday(m, h, i, "native")
 						continue
 					}
 				}
-
-				//add day after thanksgiving?
 			}
 		case 12:
 			switch m[i].LOCAL.Day() {
+			case 24: // christmas eve
+				m, h = isHoliday(m, h, i, "eve")
+				continue
+
 			case 25: // christmas
 				m, h = isHoliday(m, h, i, "xmas")
 				continue
