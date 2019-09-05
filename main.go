@@ -16,12 +16,10 @@ import (
 func main() {
 	start := time.Now()
 
-	year := 2017
+	year := 2018
 
 	filename := "tacomaWA2013_2018"
 	data := prep.ReadCSV(filename)
-
-	prep.GetData(data)
 
 	train, test := prep.TrainTestSplit(data, year)
 
@@ -29,6 +27,7 @@ func main() {
 	ts, hs := prep.MakeSamples(t, h)
 
 	////////////////////////////////////////////////////////////////////
+
 	file, _ := os.Create(("output/test.csv"))
 	defer file.Close()
 	w := csv.NewWriter(file)
@@ -72,11 +71,11 @@ func main() {
 	fmt.Println("before (｡♥‿♥｡) ")
 	fmt.Println("after ／(・x・)＼ ")
 
-	writeResults(t, tv, tp, h, hv, hp)
+	writeResults(t, tv, tp, h, hv, hp, year)
 }
 
-func writeResults(t map[time.Time]*db.DATA, tv map[int][]float64, tp map[int]float64, h map[time.Time]*db.DATA, hv map[string][]float64, hp map[string]float64) {
-	file, _ := os.Create(fmt.Sprintf("output/%sresults%s.csv", "tacomaWA2013_2018", strconv.Itoa(2017)))
+func writeResults(t map[time.Time]*db.DATA, tv map[int][]float64, tp map[int]float64, h map[time.Time]*db.DATA, hv map[string][]float64, hp map[string]float64, year int) {
+	file, _ := os.Create(fmt.Sprintf("output/results%s.csv", strconv.Itoa(year)))
 	defer file.Close()
 	w := csv.NewWriter(file)
 	defer w.Flush()

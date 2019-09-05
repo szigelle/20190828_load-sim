@@ -16,8 +16,8 @@ type DATA struct {
 	HIGH     float64
 	LOW      float64
 	TDELTA   float64
-	PREVLOAD float64
-	NEXTLOAD float64
+	IDPREV   int
+	IDNEXT   int
 	ID       int    //[ISOweek][Weekday][Hour]
 	HOLIDAY  string // true if holiday
 	BEFORE   bool

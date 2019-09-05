@@ -6,18 +6,6 @@ import (
 	"time"
 )
 
-// GetData gets more data
-func GetData(m map[time.Time]*db.DATA) {
-	for i := range m {
-		if t, ok := m[i.Add(-time.Hour)]; ok {
-			m[i].PREVLOAD = t.LOAD
-		}
-		if t, ok := m[i.Add(time.Hour)]; ok {
-			m[i].NEXTLOAD = t.LOAD
-		}
-	}
-}
-
 //TrainTestSplit splits the data
 func TrainTestSplit(m map[time.Time]*db.DATA, year int) (map[time.Time]*db.DATA, map[time.Time]*db.DATA) {
 	fmt.Println("...splitting data")
@@ -68,22 +56,71 @@ func tsamples(m map[time.Time]*db.DATA) map[int][]*db.DATA {
 						s[j] = append(s[j], date)
 					}
 				}
+				if date, ok := m[i.AddDate(0, 0, -14)]; ok {
+					if date.BEFORE == false && date.AFTER == false { // if date is week before holiday
+						s[j] = append(s[j], date)
+					}
+				}
+				if date, ok := m[i.AddDate(0, 0, -21)]; ok {
+					if date.BEFORE == false && date.AFTER == false { // if date is week before holiday
+						s[j] = append(s[j], date)
+					}
+				}
+
 				if date, ok := m[i.AddDate(0, 0, 7)]; ok {
 					if date.AFTER == false { // if date is week after holiday
 						s[j] = append(s[j], date)
 					}
 				}
+				if date, ok := m[i.AddDate(0, 0, 14)]; ok {
+					if date.BEFORE == false && date.AFTER == false { // if date is week before holiday
+						s[j] = append(s[j], date)
+					}
+				}
+				if date, ok := m[i.AddDate(0, 0, 21)]; ok {
+					if date.BEFORE == false && date.AFTER == false { // if date is week before holiday
+						s[j] = append(s[j], date)
+					}
+				}
 			}
+			/*
+				if m[i].IDPREV == j { // ID matches map id of prev hour
+					s[j] = append(s[j], m[i])
+					if date, ok := m[i.AddDate(0, 0, -7)]; ok {
+						if date.BEFORE == false { // if date is week before holiday
+							s[j] = append(s[j], date)
+						}
+					}
+					if date, ok := m[i.AddDate(0, 0, 7)]; ok {
+						if date.AFTER == false { // if date is week after holiday
+							s[j] = append(s[j], date)
+						}
+					}
+				}
+				if m[i].IDNEXT == j { // ID matches map id of prev hour
+					s[j] = append(s[j], m[i])
+					if date, ok := m[i.AddDate(0, 0, -7)]; ok {
+						if date.BEFORE == false { // if date is week before holiday
+							s[j] = append(s[j], date)
+						}
+					}
+					if date, ok := m[i.AddDate(0, 0, 7)]; ok {
+						if date.AFTER == false { // if date is week after holiday
+							s[j] = append(s[j], date)
+						}
+					}
+				}*/
 		}
 	}
 	return s
 }
 
 func hsamples(h map[time.Time]*db.DATA) map[string][]*db.DATA {
-	//make ID idx
+
 	s := make(map[string][]*db.DATA)
 
 	hID := []string{"ny", "mlk", "dst", "mem", "indep", "labor", "thanks", "native", "eve", "xmas"}
+
 	for i := range hID {
 		for j := 0; j <= 23; j++ {
 			x := make([]*db.DATA, 0)

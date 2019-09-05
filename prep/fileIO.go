@@ -84,9 +84,9 @@ func ReadCSV(filename string) map[time.Time]*db.DATA {
 				HIGH:     high,
 				LOW:      low,
 				TDELTA:   high - low,
-				PREVLOAD: 0,
-				NEXTLOAD: 0,
 				ID:       isowk*10000 + weekday*100 + datetime.Hour(), //[ISOweek][Weekday][Hour]
+				IDPREV:   isowk*10000 + weekday*100 + datetime.Add(-time.Hour).Hour(),
+				IDNEXT:   isowk*10000 + weekday*100 + datetime.Add(time.Hour).Hour(),
 				HOLIDAY:  "",
 				BEFORE:   false,
 				AFTER:    false,
